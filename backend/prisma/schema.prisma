@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------
+// Generic hierarchy node
+// -----------------------------
+model Structure {
+  id        Int        @id @default(autoincrement())
+  name      String
+  type      String     // "organization" | "team" | "client" | "episode"
+  parentId  Int?       // nullable for root nodes
+  parent    Structure? @relation("Hierarchy", fields: [parentId], references: [id])
+  children  Structure[] @relation("Hierarchy")
+  notes     Note[]     // notes attached to this node
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+// -----------------------------
+// Notes table
+// -----------------------------
+model Note {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  type        String    @default("text") // "text" | "file" | "voice"
+  structure   Structure @relation(fields: [structureId], references: [id])
+  structureId Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  tags        Json?    
+  attachments Json? 
+}
+
+// -----------------------------
+// Closure Table for roll-up queries
+// -----------------------------
+model ClosureTable {
+  ancestorId   Int
+  descendantId Int
+  distance     Int
+
+  @@id([ancestorId, descendantId]) // composite primary key
+  @@index([ancestorId])
+  @@index([descendantId])
+
+  // Optional foreign keys to enforce integrity:
+  // @@foreignKeys([ancestorId], [Structure.id])
+  // @@foreignKeys([descendantId], [Structure.id])
+}
