@@ -87,13 +87,13 @@ const TreeNode: React.FC<TreeNodeProps> = ({
 
 type LeftNavProps = {
   onSelectNode: (node: Node) => void;
+  selectedNodeId: number | null; 
 };
 
-const LeftNav: React.FC<LeftNavProps> = ({ onSelectNode }) => {
+const LeftNav: React.FC<LeftNavProps> = ({ onSelectNode, selectedNodeId }) => {
   const [tree, setTree] = useState<Node[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const fetchTree = async () => {
@@ -110,7 +110,6 @@ const LeftNav: React.FC<LeftNavProps> = ({ onSelectNode }) => {
   };
 
   const handleSelectNode = (node: Node) => {
-    setSelectedNodeId(node.id);
     onSelectNode(node);
   };
 

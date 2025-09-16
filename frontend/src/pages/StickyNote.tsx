@@ -31,10 +31,9 @@ const StickyNote: React.FC = () => {
     setSelectedNode(node);
   };
 
-  const refreshTree = async () => {
+  const refreshTree = async (nodeToKeep?: Node) => {
     await fetchTree();
-    // optionally reset selection
-    setSelectedNode(null);
+    if (nodeToKeep) setSelectedNode(nodeToKeep);
   };
 
   if (loadingTree) return <div className="p-4">Loading tree...</div>;
@@ -43,16 +42,16 @@ const StickyNote: React.FC = () => {
   return (
     <>
       <div className="flex h-screen">
-      <LeftNav onSelectNode={handleSelectNode} />
-      <ContentScreen
-        selectedNode={selectedNode}
-        onRefresh={refreshTree}
-        tree={tree}
-        onSelectNode={handleSelectNode} 
-      />
-    </div>
+        <LeftNav onSelectNode={handleSelectNode}  selectedNodeId={selectedNode ? selectedNode.id : null}  />
+        <ContentScreen
+          selectedNode={selectedNode}
+          onRefresh={refreshTree}
+          tree={tree}
+          onSelectNode={handleSelectNode}
+        />
+      </div>
     </>
-   
+
   );
 };
 

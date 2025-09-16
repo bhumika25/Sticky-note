@@ -7,7 +7,7 @@ import { Badge } from "./Badge";
 
 type NotesSectionProps = {
   node: Node;
-  onRefresh: () => void;
+  onRefresh: (node: Node) => void;
   onSelectNode: (node: Node) => void;
 };
 
@@ -89,7 +89,7 @@ const NotesSection: React.FC<NotesSectionProps> = ({ node, onRefresh, onSelectNo
       setAudioBlob(null);
       setTags([]);
       setTagInput("");
-      onRefresh();
+      onRefresh(node);
     } catch (err) {
       console.error(err);
       alert("Failed to add note");
